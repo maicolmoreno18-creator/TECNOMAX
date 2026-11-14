@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 70" fill="none">
+  <!-- ZK Green Symbol -->
+  <path d="M12 20h26L18 42h20v8H10l20-22H12v-8z" fill="#00A859"/>
+  <path d="M46 20h8v12l14-12h10L62 34l16 16H66L54 38v12h-8V20z" fill="#00A859"/>
+  
+  <!-- TECO in White -->
+  <text x="86" y="47" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="2" fill="#FFFFFF">TECO</text>
+  <text x="86" y="58" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="7" font-weight="700" letter-spacing="4" fill="#94A3B8">BIOMETRICS &amp; SECURITY</text>
+</svg>

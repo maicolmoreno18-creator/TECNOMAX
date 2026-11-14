@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 70" fill="none">
+  <!-- Seagate Spiral Waves in Cyan -->
+  <path d="M22 25c6-6 16-6 22 0l-5 5c-3-3-9-3-12 0-3 3-3 9 0 12l-5 5c-6-6-6-16 0-22z" fill="#00A3E0"/>
+  <path d="M29 32c2-2 6-2 8 0l-4 4c0 0-1 0-1 0 0 0 0 1 0 1l-3 3c-2-2-2-6 0-8z" fill="#38BDF8"/>
+  <path d="M15 18c10-10 26-10 36 0l-5 5c-7-7-19-7-26 0-7 7-7 19 0 26l-5 5c-10-10-10-26 0-36z" fill="#0284C7"/>
+
+  <!-- Wordmark -->
+  <text x="64" y="38" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="2" fill="#FFFFFF">SEAGATE</text>
+  <text x="64" y="52" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="3" fill="#38BDF8">SKYHAWK</text>
+</svg>

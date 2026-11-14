@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administrativo B2B · Catálogo e Inventario Tecnomax</title>
+  <link rel="icon" type="image/jpeg" href="./tecnomax-logo-white.png">
+  
+  <!-- Bootstrap 5.3.3 & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #060913;
+      --card-bg: #0d1424;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-purple: #8b2cf5;
+      --accent-cyan: #06b6d4;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-dark);
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar-admin {
+      background: rgba(6, 9, 19, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .brand-logo-img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .stat-card {
+      background: linear-gradient(145deg, rgba(13, 20, 36, 0.9) 0%, rgba(6, 9, 19, 0.95) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 1.25rem 1.5rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(139, 44, 245, 0.35);
+    }
+
+    .table-container {
+      background: linear-gradient(155deg, rgba(13, 20, 36, 0.7) 0%, rgba(6, 9, 19, 0.85) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .table-dark {
+      --bs-table-bg: transparent;
+    }
+
+    .cat-pill {
+      font-size: 0.74rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 14, 0.92);
+      backdrop-filter: blur(20px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .btn-gradient-purple {
+      background: linear-gradient(135deg, #8b2cf5 0%, #6d28d9 100%);
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      color: #ffffff;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .btn-gradient-purple:hover {
+      background: linear-gradient(135deg, #7c24dc 0%, #5b21b6 100%);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(139, 44, 245, 0.35);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANTALLA DE ACCESO DE SEGURIDAD (LOGIN GATEWAY) -->
+  <div id="authGate" class="auth-overlay">
+    <div class="card border border-secondary border-opacity-50 p-4 p-sm-5 text-center" style="max-width: 440px; width: 100%; background: #0c1222; border-radius: 24px; box-shadow: 0 25px 70px rgba(0,0,0,0.9);">
+      <div class="mb-3">
+        <img src="./tecnomax-logo-white.png" alt="Tecnomax Security S.A.S" style="height: 42px; object-fit: contain;">
+      </div>
+      <div class="rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 58px; height: 58px; background: rgba(139, 44, 245, 0.15); border: 1px solid rgba(139, 44, 245, 0.4); color: #c084fc;">
+        <i class="bi bi-shield-lock-fill fs-3"></i>
+      </div>
+      <h4 class="fw-bold text-white mb-1">Acceso Administrativo</h4>
+      <p class="text-secondary small mb-4">Portal de uso interno exclusivo para la gestión de catálogo e inventario B2B de Tecnomax Security S.A.S.</p>
+
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="mb-3 text-start">
+          <label class="form-label small fw-semibold text-secondary">PIN / Clave de Acceso:</label>
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary border-opacity-50 text-secondary"><i class="bi bi-key-fill"></i></span>
+            <input type="password" id="adminPinInput" class="form-control bg-dark border-secondary border-opacity-50 text-white py-2" placeholder="Ingresa PIN (predeterminado: 2026)" required autofocus>
+          </div>
+          <small class="text-muted" style="font-size: 0.72rem;">PIN por defecto: <code>2026</code></small>
+        </div>
+        <button type="submit" class="btn btn-gradient-purple w-100 py-2.5 rounded-pill shadow-sm">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar al Administrador
+        </button>
+      </form>
+
+      <div class="mt-4 pt-3 border-top border-light border-opacity-10">
+        <a href="tienda.html" class="text-secondary small text-decoration-none d-inline-flex align-items-center gap-1">
+          <i class="bi bi-arrow-left"></i> Volver a la Tienda Pública
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR INTERNO -->
+  <nav class="navbar navbar-expand-lg navbar-admin sticky-top">
+    <div class="container-xl px-3 px-sm-4">
+      <a class="navbar-brand d-flex align-items-center gap-2 py-0" href="admin.html">
+        <img src="./tecnomax-logo-white.png" alt="Tecnomax Security S.A.S" class="brand-logo-img">
+        <span class="badge rounded-pill bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 small ms-1" style="font-size: 0.7rem;">PORTAL INTERNO</span>
+      </a>
+
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <a href="tienda.html" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" title="Abrir tienda pública para clientes">
+          <i class="bi bi-shop"></i> <span class="d-none d-sm-inline">Ver Tienda Pública</span>
+        </a>
+        <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="logoutAdmin()" title="Cerrar sesión de administrador">
+          <i class="bi bi-box-arrow-right"></i> <span class="d-none d-sm-inline">Cerrar Sesión</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL DEL DASHBOARD ADMINISTRATIVO -->
+  <main class="py-4 py-lg-5 flex-grow-1">
+    <div class="container-xl px-3 px-sm-4">
+      
+      <!-- Encabezado de Gestión -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom border-light border-opacity-10">
+        <div>
+          <span class="badge rounded-pill px-3 py-1 fw-semibold mb-2" style="background: rgba(139,44,245,0.15); color: #c084fc; border: 1px solid rgba(139,44,245,0.3); font-size: 0.78rem;">
+            <i class="bi bi-shield-check me-1"></i> Administración de Catálogo & Precios B2B
+          </span>
+          <h1 class="display-6 fw-bold text-white mb-1 fs-3">Gestión de Inventario y Líneas de Negocio</h1>
+          <p class="text-secondary small mb-0">Control centralizado de productos, categorización oficial y precios mayoristas sincronizados en tiempo real.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <button type="button" class="btn btn-outline-warning rounded-pill px-3 py-2 btn-sm fw-semibold d-inline-flex align-items-center gap-1.5" onclick="resetDefaultCatalog()">
+            <i class="bi bi-arrow-counterclockwise"></i> <span>Restablecer Fábrica</span>
+          </button>
+          <button type="button" class="btn btn-gradient-purple rounded-pill px-4 py-2 btn-sm d-inline-flex align-items-center gap-1.5 shadow-sm" onclick="openProductForm()">
+            <i class="bi bi-plus-circle-fill fs-6"></i> <span>Nuevo Producto</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Métricas / KPIs Clave -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card">
+            <span class="text-secondary small fw-bold text-uppercase d-block mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">Total Equipos en Catálogo</span>
+            <div class="d-flex align-items-baseline gap-2">
+              <span id="statTotalProds" class="fs-2 fw-bold text-white">0</span>
+              <small class="text-success fw-semibold"><i class="bi bi-check2"></i> Activos</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card">
+            <span class="text-secondary small fw-bold text-uppercase d-block mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">Líneas Oficiales Activas</span>
+            <div class="d-flex align-items-baseline gap-2">
+              <span id="statActiveCats" class="fs-2 fw-bold text-info">9 / 9</span>
+              <small class="text-secondary fw-semibold">Categorías</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card">
+            <span class="text-secondary small fw-bold text-uppercase d-block mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">Valor Inventario Estimado</span>
+            <div class="d-flex align-items-baseline gap-2">
+              <span id="statTotalValue" class="fs-4 fw-bold" style="color: #4ade80;">$0</span>
+              <small class="text-secondary fw-semibold">COP</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="stat-card">
+            <span class="text-secondary small fw-bold text-uppercase d-block mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">Sincronización Tienda</span>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              <span class="rounded-circle bg-success d-inline-block" style="width: 10px; height: 10px; box-shadow: 0 0 10px #22c55e;"></span>
+              <span class="fw-bold text-white" style="font-size: 0.95rem;">En Tiempo Real</span>
+            </div>
+            <small class="text-secondary d-block mt-0.5" style="font-size: 0.74rem;">Persistencia local segura</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de Filtro y Búsqueda en Tabla -->
+      <div class="p-3 mb-3 rounded-4" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+        <div class="row g-2 align-items-center">
+          <div class="col-12 col-md-6">
+            <div class="position-relative">
+              <input type="text" id="adminSearchInput" class="form-control form-control-sm bg-dark border-secondary border-opacity-50 text-white rounded-pill ps-4 pe-3 py-2" placeholder="Buscar por modelo, SKU, nombre o palabras clave..." onkeyup="renderAdminTable()">
+              <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2.5 text-secondary" style="font-size: 0.8rem;"></i>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <select id="adminCatFilter" class="form-select form-select-sm bg-dark border-secondary border-opacity-50 text-white rounded-pill px-3 py-2" onchange="renderAdminTable()">
+              <option value="todos">Todas las Categorías (9)</option>
+              <option value="cctv">📹 CCTV (Dahua IP / HDCVI)</option>
+              <option value="imou">📶 IMOU (Smart Home Wi-Fi)</option>
+              <option value="alarmas">🔔 ALARMAS (Intrusión & Sensores)</option>
+              <option value="almacenamiento">💾 ALMACENAMIENTO (WD Purple / Seagate)</option>
+              <option value="accesorios">🔌 ACCESORIOS (Fuentes, Baluns, Conectores)</option>
+              <option value="cables">🪢 CABLES (UTP Cat 6 / Cat 5e Cobre)</option>
+              <option value="racks">🖥️ RACKS (Gabinetes Pared / Piso)</option>
+              <option value="biometricos">👆 BIOMÉTRICOS (ZKTeco Acceso & Asistencia)</option>
+              <option value="videoporteros">📺 VIDEO PORTEROS (Frentes IP & Monitores)</option>
+            </select>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 text-sm-end">
+            <small class="text-secondary" id="tableFilterCount">Mostrando todos los productos</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Gestión de Productos -->
+      <div class="table-container mb-4">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+              <tr class="border-bottom border-light border-opacity-10 text-secondary small text-uppercase" style="font-size: 0.74rem; letter-spacing: 0.05em; background: rgba(255,255,255,0.02);">
+                <th style="width: 70px;" class="ps-4">Foto</th>
+                <th>Producto & Modelo SKU</th>
+                <th>Categoría Oficial</th>
+                <th>Precio Mayorista</th>
+                <th>Disponibilidad</th>
+                <th>Garantía Oficial</th>
+                <th class="text-end pe-4" style="width: 140px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <!-- Rellenado dinámicamente por JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== MODAL FORMULARIO AÑADIR / EDITAR PRODUCTO ==================== -->
+  <div class="modal fade" id="productFormModal" tabindex="-1" aria-labelledby="pFormTitle" aria-hidden="true" style="backdrop-filter: blur(12px); background: rgba(3, 6, 14, 0.8);">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 820px;">
+      <div class="modal-content border border-secondary border-opacity-50" style="background: linear-gradient(155deg, #0d1424 0%, #060913 100%); border-radius: 24px; box-shadow: 0 25px 70px rgba(0,0,0,0.95), 0 0 50px rgba(139, 44, 245, 0.25); overflow: hidden; color: #f1f5f9;">
+        
+        <form id="productEditForm" onsubmit="saveProductForm(event)">
+          <div class="modal-header border-bottom border-light border-opacity-10 p-4 px-md-5 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-pencil-square fs-4 text-purple" style="color: #c084fc;"></i>
+              <h4 class="modal-title fw-bold text-white fs-5 mb-0" id="pFormTitle">Añadir Nuevo Producto</h4>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body p-4 px-md-5" style="max-height: 65vh; overflow-y: auto;">
+            <input type="hidden" id="fpId">
+
+            <div class="row g-3">
+              <!-- Nombre y Referencia -->
+              <div class="col-12 col-md-8">
+                <label class="form-label small fw-bold text-light mb-1">Nombre Completo del Producto *</label>
+                <input type="text" id="fpTitle" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2" placeholder="Ej: Cámara Domo Dahua 4MP Full-Color" required>
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label small fw-bold text-light mb-1">Modelo / SKU *</label>
+                <input type="text" id="fpModel" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2" placeholder="Ej: IPC-HDW2439T" required>
+              </div>
+
+              <!-- Categoría Oficial (9 Categorías) y Precio -->
+              <div class="col-12 col-md-6">
+                <label class="form-label small fw-bold text-light mb-1">Categoría Oficial de Solución *</label>
+                <select id="fpCategory" class="form-select bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2" required>
+                  <option value="cctv">📹 CCTV (Dahua IP / HDCVI)</option>
+                  <option value="imou">📶 IMOU (Smart Home Wi-Fi)</option>
+                  <option value="alarmas">🔔 ALARMAS (Intrusión & Sensores)</option>
+                  <option value="almacenamiento">💾 ALMACENAMIENTO (WD Purple / Seagate)</option>
+                  <option value="accesorios">🔌 ACCESORIOS (Fuentes, Baluns, Conectores)</option>
+                  <option value="cables">🪢 CABLES (UTP Cat 6 / Cat 5e Cobre)</option>
+                  <option value="racks">🖥️ RACKS (Gabinetes Pared / Piso)</option>
+                  <option value="biometricos">👆 BIOMÉTRICOS (ZKTeco Acceso & Asistencia)</option>
+                  <option value="videoporteros">📺 VIDEO PORTEROS (Frentes IP & Pantallas Touch)</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label small fw-bold text-light mb-1">Precio Mayorista (COP) *</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-dark border-secondary border-opacity-50 text-secondary">$</span>
+                  <input type="number" id="fpPrice" class="form-control bg-dark border-secondary border-opacity-50 text-white py-2" placeholder="185000" min="1000" step="500" required>
+                  <span class="input-group-text bg-dark border-secondary border-opacity-50 text-secondary">COP</span>
+                </div>
+              </div>
+
+              <!-- Distintivo Comercial y Estado de Stock -->
+              <div class="col-12 col-md-6">
+                <label class="form-label small fw-bold text-light mb-1">Insignia / Badge de Marca</label>
+                <input type="text" id="fpBadge" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2" placeholder="Ej: Dahua CCTV / IMOU Smart / ZKTeco">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label small fw-bold text-light mb-1">Disponibilidad en Bodega</label>
+                <select id="fpStock" class="form-select bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2">
+                  <option value="Stock Disponible">Stock Disponible (Despacho 24h)</option>
+                  <option value="Stock Costa">Stock Costa (Barranquilla)</option>
+                  <option value="Stock Inmediato">Stock Inmediato (Medellín)</option>
+                  <option value="Bajo Pedido">Bajo Pedido (Importación Directa)</option>
+                </select>
+              </div>
+
+              <!-- Imagen y Garantía -->
+              <div class="col-12 col-md-6">
+                <label class="form-label small fw-bold text-light mb-1">Imagen del Producto</label>
+                <input type="text" id="fpImg" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2" value="./producto.png" placeholder="./producto.png">
+                <small class="text-secondary" style="font-size: 0.72rem;">Usa './producto.png' para el estándar oficial en fondo azul.</small>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label small fw-bold text-light mb-1">Garantía Oficial</label>
+                <input type="text" id="fpWarranty" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3 py-2" placeholder="Ej: 3 Años de Garantía Oficial Dahua Technology">
+              </div>
+
+              <!-- Descripción -->
+              <div class="col-12">
+                <label class="form-label small fw-bold text-light mb-1">Descripción Comercial B2B *</label>
+                <textarea id="fpDesc" class="form-control bg-dark border-secondary border-opacity-50 text-white rounded-3" rows="3" placeholder="Detalle técnico, aplicaciones recomendadas y ventajas para instaladores..." required></textarea>
+              </div>
+
+              <!-- Ficha Técnica Rápida (4 Parámetros clave) -->
+              <div class="col-12">
+                <label class="form-label small fw-bold text-info mb-1"><i class="bi bi-cpu me-1"></i> Ficha Técnica y Prestaciones Clave (Opcional):</label>
+                <div class="row g-2">
+                  <div class="col-12 col-sm-6">
+                    <input type="text" id="fpSpec1" class="form-control form-control-sm bg-dark border-secondary border-opacity-50 text-white rounded-3" placeholder="Parámetro 1: ej: Resolución: 4MP 2K QHD">
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <input type="text" id="fpSpec2" class="form-control form-control-sm bg-dark border-secondary border-opacity-50 text-white rounded-3" placeholder="Parámetro 2: ej: Visión Nocturna: Full-Color 30m">
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <input type="text" id="fpSpec3" class="form-control form-control-sm bg-dark border-secondary border-opacity-50 text-white rounded-3" placeholder="Parámetro 3: ej: Compresión: Smart H.265+">
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <input type="text" id="fpSpec4" class="form-control form-control-sm bg-dark border-secondary border-opacity-50 text-white rounded-3" placeholder="Parámetro 4: ej: Alimentación: PoE 802.3af">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="modal-footer border-top border-light border-opacity-10 p-3 px-md-5 d-flex justify-content-between align-items-center">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4 py-2 btn-sm fw-semibold text-light" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-gradient-purple rounded-pill px-4 py-2 btn-sm fw-bold text-white shadow-sm">
+              <i class="bi bi-check-lg me-1"></i> Guardar Producto
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER ADMINISTRATIVO -->
+  <footer class="py-3 border-top border-light border-opacity-10 text-center text-secondary small" style="background: #020408;">
+    <div class="container-xl d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+      <span>Portal Interno de Administración © 2026 TECNOMAX SECURITY S.A.S.</span>
+      <span class="d-inline-flex align-items-center gap-1">
+        Desarrollado por: <strong class="text-white">GioTech Ing.</strong>
+      </span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Configuración Oficial de las 9 Categorías
+    const CATEGORIES_CONFIG = {
+      'todos': { label: 'Todos los Equipos', icon: 'bi-grid-fill', color: '#7e22ce' },
+      'cctv': { label: 'CCTV', icon: 'bi-camera-video', color: '#8b2cf5' },
+      'imou': { label: 'IMOU', icon: 'bi-wifi', color: '#0284c7' },
+      'alarmas': { label: 'Alarmas', icon: 'bi-bell', color: '#f59e0b' },
+      'almacenamiento': { label: 'Almacenamiento', icon: 'bi-device-hdd', color: '#16a34a' },
+      'accesorios': { label: 'Accesorios', icon: 'bi-plug', color: '#6366f1' },
+      'cables': { label: 'Cables', icon: 'bi-bezier2', color: '#06b6d4' },
+      'racks': { label: 'Racks', icon: 'bi-server', color: '#64748b' },
+      'biometricos': { label: 'Biométricos', icon: 'bi-fingerprint', color: '#dc2626' },
+      'videoporteros': { label: 'Video Porteros', icon: 'bi-display', color: '#ec4899' }
+    };
+
+    // Catálogo Maestro Predeterminado (18 Productos en las 9 Categorías Oficiales)
+    const DEFAULT_PRODUCTS = {
+      // 1. CCTV
+      'dahua-domo-4mp': {
+        id: 'dahua-domo-4mp',
+        category: 'cctv',
+        badge: 'Dahua CCTV',
+        badgeColor: 'rgba(139, 44, 245, 0.25)',
+        badgeTextColor: '#c084fc',
+        model: 'IPC-HDW2439T-AS-LED',
+        title: 'Cámara Domo Dahua 4MP Full-Color WizSense',
+        price: 185000,
+        priceStr: '$185.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Cámara domo IP de última generación con sensor CMOS de alta sensibilidad y tecnología Full-Color 24/7, que garantiza imágenes a todo color en oscuridad absoluta. Equipada con Inteligencia Artificial WizSense para clasificación inteligente de humanos y vehículos.',
+        specs: [
+          { label: 'Resolución', val: '4 MP reales (2688 × 1520 a 30 fps)', icon: 'bi-camera-video' },
+          { label: 'Visión Nocturna', val: 'Full-Color 24/7 LED cálido 30m', icon: 'bi-moon-stars' },
+          { label: 'Lente Fijo', val: '2.8mm (Ángulo gran angular 107°)', icon: 'bi-eye' },
+          { label: 'Audio', val: 'Micrófono de alta sensibilidad integrado', icon: 'bi-mic' },
+          { label: 'Inteligencia Artificial', val: 'WizSense SMD 3.0 (Humanos/Autos)', icon: 'bi-cpu' },
+          { label: 'Alimentación', val: 'PoE (802.3af) y 12V DC estándar', icon: 'bi-lightning-charge' },
+          { label: 'Protección', val: 'Carcasa metálica hermética IP67', icon: 'bi-shield-check' }
+        ],
+        warranty: '3 Años de Garantía Oficial Dahua Technology',
+        waText: 'Cámara Domo Dahua 4MP Full-Color (IPC-HDW2439T-AS-LED)'
+      },
+      'dahua-nvr-8ch': {
+        id: 'dahua-nvr-8ch',
+        category: 'cctv',
+        badge: 'Grabadores NVR',
+        badgeColor: 'rgba(139, 44, 245, 0.25)',
+        badgeTextColor: '#c084fc',
+        model: 'NVR2108HS-I2',
+        title: 'NVR Dahua WizSense 8 Canales 4K con IA',
+        price: 320000,
+        priceStr: '$320.000',
+        img: './producto.png',
+        stock: 'Stock Inmediato',
+        desc: 'Grabador digital de red para 8 cámaras IP con soporte para ultra alta resolución 4K. Incluye analíticas WizSense de reconocimiento facial, protección perimetral y búsqueda inteligente de objetivos por atributos.',
+        specs: [
+          { label: 'Canales IP', val: '8 Canales hasta 12MP / 4K por canal', icon: 'bi-grid-3x3' },
+          { label: 'Ancho de Banda', val: '80 Mbps de procesamiento continuo', icon: 'bi-speedometer2' },
+          { label: 'Compresión', val: 'Smart H.265+ (Ahorro 70% disco)', icon: 'bi-hdd-network' },
+          { label: 'Almacenamiento', val: '1 Bahía SATA hasta 10TB de capacidad', icon: 'bi-device-hdd' },
+          { label: 'Salidas de Video', val: 'HDMI 4K independiente + VGA', icon: 'bi-display' },
+          { label: 'Monitoreo Remoto', val: 'App DMSS móvil y SmartPSS para PC', icon: 'bi-phone' },
+          { label: 'Analíticas IA', val: 'Reconocimiento facial y perimetral', icon: 'bi-cpu' }
+        ],
+        warranty: '2 Años de Garantía Oficial con sustitución DOA',
+        waText: 'NVR Dahua WizSense 8 Canales 4K (NVR2108HS-I2)'
+      },
+
+      // 2. IMOU
+      'imou-ranger-2': {
+        id: 'imou-ranger-2',
+        category: 'imou',
+        badge: 'IMOU Smart Home',
+        badgeColor: 'rgba(6, 182, 212, 0.25)',
+        badgeTextColor: '#38bdf8',
+        model: 'IPC-A42P-L (Ranger 2)',
+        title: 'Cámara Wi-Fi IMOU Ranger 2 4MP Pan & Tilt 360°',
+        price: 129000,
+        priceStr: '$129.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Solución ideal para residencias, oficinas y locales comerciales. Cuenta con giro motorizado 360°, audio de dos vías para comunicación en tiempo real y seguimiento automático de movimiento humano.',
+        specs: [
+          { label: 'Resolución', val: '4 MP 2K QHD (2560 × 1440) nítida', icon: 'bi-camera-video' },
+          { label: 'Cobertura', val: 'Rotación Panorámica 355° y Tilt 80°', icon: 'bi-arrow-repeat' },
+          { label: 'Audio Doble Vía', val: 'Micrófono y altavoz integrados', icon: 'bi-volume-up' },
+          { label: 'Disuasión', val: 'Sirena acústica de alarma configurable', icon: 'bi-bell' },
+          { label: 'Seguimiento', val: 'Smart Tracking automático de personas', icon: 'bi-person-bounding-box' },
+          { label: 'Privacidad', val: 'Modo máscara física desde app móvil', icon: 'bi-shield-shaded' },
+          { label: 'Almacenamiento', val: 'MicroSD hasta 256GB y nube IMOU', icon: 'bi-sd-card' }
+        ],
+        warranty: '1 Año de Garantía Directa IMOU / Dahua',
+        waText: 'Cámara Wi-Fi IMOU Ranger 2 4MP (IPC-A42P-L)'
+      },
+      'imou-cruiser-4mp': {
+        id: 'imou-cruiser-4mp',
+        category: 'imou',
+        badge: 'IMOU Exterior',
+        badgeColor: 'rgba(6, 182, 212, 0.25)',
+        badgeTextColor: '#38bdf8',
+        model: 'IPC-S42FP (Cruiser)',
+        title: 'Cámara Exterior IMOU Cruiser 4MP PTZ con Sirena',
+        price: 215000,
+        priceStr: '$215.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Cámara domo PTZ para exterior con protección climática IP66, visión nocturna inteligente en 4 modos, foco disuasorio LED y sirena activa integrada de 110dB.',
+        specs: [
+          { label: 'Resolución', val: '4 Megapíxeles QHD Ultra Nítido', icon: 'bi-camera-video' },
+          { label: 'Resistencia', val: 'Certificación intemperie IP66', icon: 'bi-shield-check' },
+          { label: 'Visión Nocturna', val: 'Smart Color Night Vision 30m', icon: 'bi-moon' },
+          { label: 'Disuasión Activa', val: 'Sirena 110 dB + Foco estroboscópico', icon: 'bi-bell-fill' },
+          { label: 'Rotación', val: '355° Panorámica y 90° Inclinación', icon: 'bi-arrow-repeat' }
+        ],
+        warranty: '1 Año de Garantía Directa IMOU',
+        waText: 'Cámara IMOU Cruiser 4MP PTZ (IPC-S42FP)'
+      },
+
+      // 3. ALARMAS
+      'dahua-alarm-kit': {
+        id: 'dahua-alarm-kit',
+        category: 'alarmas',
+        badge: 'Dahua Alarmas',
+        badgeColor: 'rgba(245, 158, 11, 0.25)',
+        badgeTextColor: '#fbbf24',
+        model: 'ARC3000G-W2(868)',
+        title: 'Kit Alarma Inalámbrica Dahua Hub Airfly con PIR y Control',
+        price: 485000,
+        priceStr: '$485.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Sistema de alarma inalámbrico de largo alcance con tecnología Airfly de doble vía. Incluye panel central Hub con conexión Wi-Fi + LAN + 4G, sensor de movimiento inmune a mascotas, contacto magnético de puerta y control remoto.',
+        specs: [
+          { label: 'Capacidad', val: 'Hasta 150 periféricos inalámbricos', icon: 'bi-broadcast-pin' },
+          { label: 'Conectividad', val: 'Wi-Fi 2.4GHz + LAN Ethernet + SIM 4G', icon: 'bi-wifi' },
+          { label: 'Alcance RF', val: 'Hasta 2.000 metros en campo abierto', icon: 'bi-reception-4' },
+          { label: 'Batería de Respaldo', val: 'Batería de litio hasta 12h de autonomía', icon: 'bi-battery-charging' },
+          { label: 'Monitoreo', val: 'Notificaciones push en app DMSS y CRA', icon: 'bi-phone' }
+        ],
+        warranty: '2 Años de Garantía Oficial Dahua Technology',
+        waText: 'Kit Alarma Inalámbrica Dahua Hub (ARC3000G-W2)'
+      },
+      'dsc-neo-kit': {
+        id: 'dsc-neo-kit',
+        category: 'alarmas',
+        badge: 'DSC Alarmas',
+        badgeColor: 'rgba(245, 158, 11, 0.25)',
+        badgeTextColor: '#fbbf24',
+        model: 'HS2032NK + Teclado',
+        title: 'Central de Alarma DSC PowerSeries Neo Híbrida 8 Zonas',
+        price: 395000,
+        priceStr: '$395.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'El estándar de la industria bancaria y corporativa. Panel híbrido expandible hasta 32 zonas con tecnología PowerG de encriptación AES-128 para máxima seguridad contra sabotajes.',
+        specs: [
+          { label: 'Zonas', val: '8 Zonas en placa expandibles a 32', icon: 'bi-shield-shaded' },
+          { label: 'Tecnología', val: 'PowerG con cifrado militar AES-128', icon: 'bi-lock' },
+          { label: 'Particiones', val: '4 Particiones independientes', icon: 'bi-grid-1x2' },
+          { label: 'Comunicación', val: 'Módulos IP/Celular y línea telefónica', icon: 'bi-hdd-network' }
+        ],
+        warranty: '2 Años de Garantía Oficial DSC Tyco',
+        waText: 'Central Alarma DSC Neo 8 Zonas (HS2032NK)'
+      },
+
+      // 4. ALMACENAMIENTO
+      'wd-purple-2tb': {
+        id: 'wd-purple-2tb',
+        category: 'almacenamiento',
+        badge: 'Almacenamiento 24/7',
+        badgeColor: 'rgba(34, 197, 94, 0.25)',
+        badgeTextColor: '#4ade80',
+        model: 'WD20PURZ (Surveillance)',
+        title: 'Disco Duro Western Digital Purple 2TB Especializado CCTV',
+        price: 245000,
+        priceStr: '$245.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Diseñado específicamente para los rigores y temperaturas del funcionamiento ininterrumpido 24/7 en sistemas de videovigilancia de alta definición. Cuenta con firmware exclusivo AllFrame para minimizar errores de grabación.',
+        specs: [
+          { label: 'Capacidad', val: '2 TB (SATA 6 Gb/s, 64MB caché)', icon: 'bi-device-hdd' },
+          { label: 'Tecnología', val: 'Firmware AllFrame anti-pérdida cuadros', icon: 'bi-film' },
+          { label: 'Cámaras Soportadas', val: 'Hasta 64 cámaras de video simultáneas', icon: 'bi-camera-video' },
+          { label: 'Ciclo de Trabajo', val: '24/7 continuo (Hasta 180 TB/año)', icon: 'bi-arrow-clockwise' },
+          { label: 'Resistencia Térmica', val: 'Componentes para calor continuo en racks', icon: 'bi-thermometer-half' },
+          { label: 'Eficiencia', val: 'IntelliSeek para menor vibración', icon: 'bi-battery-charging' }
+        ],
+        warranty: '3 Años de Garantía Oficial Western Digital Colombia',
+        waText: 'Disco Duro WD Purple 2TB (WD20PURZ)'
+      },
+      'seagate-skyhawk-4tb': {
+        id: 'seagate-skyhawk-4tb',
+        category: 'almacenamiento',
+        badge: 'Seagate SkyHawk',
+        badgeColor: 'rgba(6, 182, 212, 0.25)',
+        badgeTextColor: '#38bdf8',
+        model: 'ST4000VX016 (AI-Ready)',
+        title: 'Disco Duro Seagate SkyHawk 4TB para Video Inteligente',
+        price: 390000,
+        priceStr: '$390.000',
+        img: './producto.png',
+        stock: 'Stock Inmediato',
+        desc: 'Unidad de almacenamiento de grado empresarial con firmware ImagePerfect diseñado para evitar caídas de fotogramas en sistemas de videovigilancia de alta densidad de cámaras y análisis de Inteligencia Artificial.',
+        specs: [
+          { label: 'Capacidad', val: '4 TB (SATA 6 Gb/s, 256MB caché)', icon: 'bi-device-hdd' },
+          { label: 'Firmware', val: 'ImagePerfect para streaming continuo', icon: 'bi-film' },
+          { label: 'Cámaras HD', val: 'Hasta 64 cámaras de video concurrentes', icon: 'bi-camera-video' },
+          { label: 'Sensores RV', val: 'Rotational Vibration para bahías múltiples', icon: 'bi-activity' },
+          { label: 'Fiabilidad', val: 'MTBF de 1.000.000 horas (180 TB/año)', icon: 'bi-award' },
+          { label: 'Rescue Service', val: '3 Años de recuperación de datos Seagate', icon: 'bi-life-preserver' }
+        ],
+        warranty: '3 Años de Garantía Oficial Seagate con Rescue Data Recovery',
+        waText: 'Disco Duro Seagate SkyHawk 4TB (ST4000VX016)'
+      },
+
+      // 5. ACCESORIOS
+      'fuente-central-12v': {
+        id: 'fuente-central-12v',
+        category: 'accesorios',
+        badge: 'Energía & Protección',
+        badgeColor: 'rgba(99, 102, 241, 0.25)',
+        badgeTextColor: '#818cf8',
+        model: 'PS-12V10A-9CH',
+        title: 'Fuente de Poder Centralizada 12V 10A 9 Salidas con Fusible',
+        price: 85000,
+        priceStr: '$85.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Caja metálica ventilada con cerradura de seguridad. Suministra energía estabilizada para hasta 9 cámaras de seguridad con protección de fusibles PTC individuales autorecuperables.',
+        specs: [
+          { label: 'Salida', val: '12V DC regulado a 10 Amperios totales', icon: 'bi-lightning-charge' },
+          { label: 'Canales', val: '9 Salidas independientes con fusible PTC', icon: 'bi-grid' },
+          { label: 'Gabinete', val: 'Metálico con chapa y llave de seguridad', icon: 'bi-box' },
+          { label: 'Protección', val: 'Sobretensión, cortocircuito y sobrecarga', icon: 'bi-shield-check' }
+        ],
+        warranty: '1 Año de Garantía Directa Tecnomax',
+        waText: 'Fuente Centralizada 12V 10A 9 Salidas (PS-12V10A-9CH)'
+      },
+      'balun-hd-pasivo': {
+        id: 'balun-hd-pasivo',
+        category: 'accesorios',
+        badge: 'Conectividad CCTV',
+        badgeColor: 'rgba(99, 102, 241, 0.25)',
+        badgeTextColor: '#818cf8',
+        model: 'PFM800-4K (Dahua)',
+        title: 'Par Video Balun Pasivo 4K HDCVI/TVI/AHD con Protección ESD',
+        price: 18000,
+        priceStr: '$18.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Transceptores pasivos de video de alta gama para transmisión de video en tiempo real sobre cable UTP Cat 5e/6. Soporta resoluciones hasta 4K con inmunidad superior a interferencias electromagnéticas.',
+        specs: [
+          { label: 'Resolución', val: 'Compatible 720p, 1080p, 4MP, 5MP y 4K', icon: 'bi-camera-video' },
+          { label: 'Distancia', val: 'Hasta 400m en 720p y 200m en 4K HDCVI', icon: 'bi-rulers' },
+          { label: 'Protección', val: 'Supresor ESD anti-descargas integrado', icon: 'bi-shield-fill-check' }
+        ],
+        warranty: '1 Año de Garantía Dahua Technology',
+        waText: 'Par Video Balun Pasivo 4K Dahua (PFM800-4K)'
+      },
+
+      // 6. CABLES
+      'cable-utp-cat6': {
+        id: 'cable-utp-cat6',
+        category: 'cables',
+        badge: 'Cableado Estructurado',
+        badgeColor: 'rgba(6, 182, 212, 0.25)',
+        badgeTextColor: '#38bdf8',
+        model: 'UTP-CAT6-OUT-CU305',
+        title: 'Bobina Cable UTP Cat 6 100% Cobre Exterior (305 metros)',
+        price: 380000,
+        priceStr: '$380.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Cable de red de máximo rendimiento fabricado en cobre puro sin aleaciones. Diseñado para tendidos exteriores exigentes, garantizando cero pérdida de señal y plena compatibilidad con alimentación PoE de largo alcance.',
+        specs: [
+          { label: 'Conductor', val: '100% Cobre puro sólido (23 AWG)', icon: 'bi-plug' },
+          { label: 'Metraje', val: 'Bobina 305m con marcación secuencial', icon: 'bi-rulers' },
+          { label: 'Chaqueta Exterior', val: 'Doble cubierta PE resistente a UV/lluvia', icon: 'bi-cloud-sun' },
+          { label: 'Velocidad', val: 'Certificado 250 MHz y Gigabit 1000 Mbps', icon: 'bi-lightning' },
+          { label: 'PoE Certificado', val: 'Soporta PoE, PoE+ y Hi-PoE sin caída', icon: 'bi-reception-4' },
+          { label: 'Estructura Interna', val: 'Cruceta plástica anti-diafonía', icon: 'bi-bounding-box' }
+        ],
+        warranty: 'Garantía de Rendimiento y Certificación de Enlace PoE',
+        waText: 'Bobina Cable UTP Cat 6 100% Cobre (305m)'
+      },
+      'cable-utp-cat5e': {
+        id: 'cable-utp-cat5e',
+        category: 'cables',
+        badge: 'Cableado Interior',
+        badgeColor: 'rgba(6, 182, 212, 0.25)',
+        badgeTextColor: '#38bdf8',
+        model: 'UTP-CAT5E-IN-CU305',
+        title: 'Bobina Cable UTP Cat 5e Cobre 305m Interior',
+        price: 285000,
+        priceStr: '$285.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Bobina de red categoría 5e construida con conductores de cobre genuino para cableado estructurado interno en oficinas, bodegas y hogares inteligentes.',
+        specs: [
+          { label: 'Conductor', val: 'Cobre sólido 24 AWG de alta pureza', icon: 'bi-plug' },
+          { label: 'Norma', val: 'Certificación ANSI/TIA-568-C.2', icon: 'bi-check-all' },
+          { label: 'Aplicación', val: 'Redes LAN Fast Ethernet y CCTV IP PoE', icon: 'bi-hdd-network' }
+        ],
+        warranty: 'Garantía Oficial de Conductividad Tecnomax',
+        waText: 'Bobina Cable UTP Cat 5e Cobre 305m'
+      },
+
+      // 7. RACKS
+      'rack-pared-9u': {
+        id: 'rack-pared-9u',
+        category: 'racks',
+        badge: 'Gabinetes & Racks',
+        badgeColor: 'rgba(100, 116, 139, 0.25)',
+        badgeTextColor: '#94a3b8',
+        model: 'RK-WALL-9U450',
+        title: 'Gabinete Rack de Pared 9U Fondo 450mm con Vidrio Templado',
+        price: 240000,
+        priceStr: '$240.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Gabinete metálico para montaje en pared de 9 unidades de rack estándar 19". Puerta frontal en vidrio de seguridad con cerradura, paneles laterales desmontables y ranuras de ventilación para extractores.',
+        specs: [
+          { label: 'Altura', val: '9 Unidades estándar (19 pulgadas)', icon: 'bi-server' },
+          { label: 'Profundidad', val: '450 mm con rieles ajustables en fondo', icon: 'bi-rulers' },
+          { label: 'Seguridad', val: 'Puerta con cerradura y vidrio templado', icon: 'bi-lock' },
+          { label: 'Capacidad Carga', val: 'Hasta 60 kg de carga estática', icon: 'bi-box-seam' }
+        ],
+        warranty: '2 Años de Garantía Estructural Tecnomax',
+        waText: 'Gabinete Rack de Pared 9U (RK-WALL-9U450)'
+      },
+      'rack-piso-24u': {
+        id: 'rack-piso-24u',
+        category: 'racks',
+        badge: 'Racks de Servidores',
+        badgeColor: 'rgba(100, 116, 139, 0.25)',
+        badgeTextColor: '#94a3b8',
+        model: 'RK-OPEN-24U',
+        title: 'Rack de Piso Servidor 24U Abierto con Rodachinas',
+        price: 520000,
+        priceStr: '$520.000',
+        img: './producto.png',
+        stock: 'Stock Costa',
+        desc: 'Estructura modular reforzada en acero laminado en frío de 24U con base rodante para servidores, switches PoE, routers de fibra óptica y sistemas NVR de alta densidad.',
+        specs: [
+          { label: 'Altura', val: '24 Unidades (1.20 metros altura)', icon: 'bi-server' },
+          { label: 'Movilidad', val: '4 Ruedas de uso pesado con freno', icon: 'bi-truck' },
+          { label: 'Material', val: 'Acero SPCC laminado en frío calibre 16', icon: 'bi-shield-check' }
+        ],
+        warranty: '3 Años de Garantía Estructural',
+        waText: 'Rack de Piso Servidor 24U (RK-OPEN-24U)'
+      },
+
+      // 8. BIOMÉTRICOS
+      'zkteco-k40': {
+        id: 'zkteco-k40',
+        category: 'biometricos',
+        badge: 'ZKTeco Biometría',
+        badgeColor: 'rgba(239, 68, 68, 0.25)',
+        badgeTextColor: '#f87171',
+        model: 'K40-PRO / ID',
+        title: 'Terminal Biométrico ZKTeco K40 Pro (Control de Acceso y Asistencia)',
+        price: 275000,
+        priceStr: '$275.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Terminal biométrico elegante y confiable con verificación por huella dactilar y tarjetas de proximidad. Incluye batería de respaldo integrada para seguir operando ante cortes de fluido eléctrico.',
+        specs: [
+          { label: 'Capacidad Huellas', val: '1.000 huellas y 80.000 eventos', icon: 'bi-fingerprint' },
+          { label: 'Lector RFID', val: 'Compatible con tarjetas EM 125 kHz', icon: 'bi-credit-card-2-front' },
+          { label: 'Batería de Respaldo', val: 'Autonomía de 3 a 4 horas sin luz', icon: 'bi-battery-full' },
+          { label: 'Pantalla', val: 'TFT a color 2.8" con menú en español', icon: 'bi-tv' },
+          { label: 'Conectividad', val: 'Puerto TCP/IP y descarga directa USB', icon: 'bi-usb-symbol' },
+          { label: 'Control de Acceso', val: 'Relé para chapa eléctrica o electroimán', icon: 'bi-door-closed' },
+          { label: 'Software', val: 'ZKTime.Net / ZKBio Time incluido', icon: 'bi-laptop' }
+        ],
+        warranty: '1 Año de Garantía Oficial ZKTeco con repuestos originales',
+        waText: 'Terminal Biométrico ZKTeco K40 Pro'
+      },
+      'zkteco-speedface': {
+        id: 'zkteco-speedface',
+        category: 'biometricos',
+        badge: 'Reconocimiento Facial',
+        badgeColor: 'rgba(239, 68, 68, 0.25)',
+        badgeTextColor: '#f87171',
+        model: 'MB460-ID (Visible Light)',
+        title: 'Terminal de Reconocimiento Facial y Huella ZKTeco MB460',
+        price: 460000,
+        priceStr: '$460.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Terminal multibiométrico de última generación con cámara dual de reconocimiento facial infrarrojo y sensor óptico de huella. Reconoce rostros en menos de 0.5 segundos incluso en penumbra.',
+        specs: [
+          { label: 'Capacidad Rostros', val: '1.500 Rostros y 2.000 Huellas dactilares', icon: 'bi-person-bounding-box' },
+          { label: 'Algoritmo', val: 'Anti-suplantación contra fotos y videos', icon: 'bi-shield-lock' },
+          { label: 'Comunicación', val: 'TCP/IP, Wi-Fi integrado y USB host', icon: 'bi-wifi' }
+        ],
+        warranty: '1 Año de Garantía Oficial ZKTeco',
+        waText: 'Terminal Reconocimiento Facial ZKTeco MB460'
+      },
+
+      // 9. VIDEO PORTEROS
+      'dahua-vto-kit': {
+        id: 'dahua-vto-kit',
+        category: 'videoporteros',
+        badge: 'Videoporteros IP',
+        badgeColor: 'rgba(236, 72, 153, 0.25)',
+        badgeTextColor: '#f472b6',
+        model: 'KTP01-F (Villa Kit)',
+        title: 'Kit Videoportero IP Dahua Frente Metálico + Monitor Touch 7"',
+        price: 680000,
+        priceStr: '$680.000',
+        img: './producto.png',
+        stock: 'Stock Inmediato',
+        desc: 'Solución integral de videoportero IP para casas, condominios y oficinas. Frente de calle con cámara gran angular de 2MP, visión nocturna, llamada directa a la app móvil DMSS y monitor interior táctil capacitivo de 7 pulgadas con alimentación PoE.',
+        specs: [
+          { label: 'Frente de Calle', val: 'Carcasa de aluminio IK08 antivandálica', icon: 'bi-shield-check' },
+          { label: 'Cámara Frente', val: '2 MP CMOS con ángulo FOV 140°', icon: 'bi-camera-video' },
+          { label: 'Monitor Interior', val: 'Pantalla táctil a color 7" PoE 802.3af', icon: 'bi-display' },
+          { label: 'App Móvil DMSS', val: 'Apertura de puerta y videollamada al celular', icon: 'bi-phone' },
+          { label: 'Apertura', val: 'Soporta tarjeta RFID IC y botón de salida', icon: 'bi-door-open' }
+        ],
+        warranty: '2 Años de Garantía Oficial Dahua Technology',
+        waText: 'Kit Videoportero IP Dahua Frente + Monitor (KTP01-F)'
+      },
+      'dahua-vth-monitor': {
+        id: 'dahua-vth-monitor',
+        category: 'videoporteros',
+        badge: 'Monitores IP',
+        badgeColor: 'rgba(236, 72, 153, 0.25)',
+        badgeTextColor: '#f472b6',
+        model: 'VTH2421FW-P',
+        title: 'Monitor Adicional Touch 7" Dahua PoE para Apartamentos',
+        price: 310000,
+        priceStr: '$310.000',
+        img: './producto.png',
+        stock: 'Stock Disponible',
+        desc: 'Monitor interior de 7 pulgadas para expansión de sistemas de videoportero en segundas plantas o habitaciones. Intercomunicación entre monitores y visualización en vivo de cámaras IP Dahua del sistema.',
+        specs: [
+          { label: 'Pantalla', val: 'TFT capacitiva 7" resolución 1024x600', icon: 'bi-display' },
+          { label: 'Alimentación', val: 'PoE estándar o 12V DC', icon: 'bi-lightning' },
+          { label: 'Integración', val: 'Muestra cámaras de seguridad IP en pantalla', icon: 'bi-camera-video' }
+        ],
+        warranty: '2 Años de Garantía Oficial Dahua',
+        waText: 'Monitor Adicional Touch 7" Dahua (VTH2421FW-P)'
+      }
+    };
+
+    function formatCOP(num) {
+      return '$' + Number(num || 0).toLocaleString('es-CO');
+    }
+
+    let productsData = {};
+
+    function loadProductsCatalog() {
+      try {
+        const saved = localStorage.getItem('tecnomax_products_v2');
+        if (saved) {
+          productsData = JSON.parse(saved);
+          if (Object.keys(productsData).length < 12) {
+            productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            saveProductsCatalog();
+          }
+        } else {
+          productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+          saveProductsCatalog();
+        }
+      } catch (e) {
+        productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+      }
+    }
+
+    function saveProductsCatalog() {
+      try {
+        localStorage.setItem('tecnomax_products_v2', JSON.stringify(productsData));
+      } catch (e) {
+        console.error('Error guardando en localStorage:', e);
+      }
+    }
+
+    // Manejo de Acceso / Autenticación Interna
+    function checkAuth() {
+      const isAuth = sessionStorage.getItem('tecnomax_admin_auth');
+      const gate = document.getElementById('authGate');
+      if (isAuth === 'true') {
+        gate.style.display = 'none';
+      } else {
+        gate.style.display = 'flex';
+      }
+    }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const pin = document.getElementById('adminPinInput').value.trim();
+      if (pin === '2026' || pin === 'admin' || pin === 'tecnomax2026') {
+        sessionStorage.setItem('tecnomax_admin_auth', 'true');
+        document.getElementById('authGate').style.display = 'none';
+        renderAdminDashboard();
+      } else {
+        alert('PIN o clave incorrecta. Por favor verifique.');
+      }
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('tecnomax_admin_auth');
+      document.getElementById('authGate').style.display = 'flex';
+      document.getElementById('adminPinInput').value = '';
+    }
+
+    // Renderizado del Dashboard y Tabla
+    function renderAdminDashboard() {
+      const all = Object.entries(productsData);
+      
+      // KPIs
+      document.getElementById('statTotalProds').textContent = all.length;
+      
+      const catsSet = new Set(all.map(([_, p]) => p.category));
+      document.getElementById('statActiveCats').textContent = `${catsSet.size} / 9`;
+
+      const totalVal = all.reduce((sum, [_, p]) => sum + (Number(p.price) || 0), 0);
+      document.getElementById('statTotalValue').textContent = formatCOP(totalVal);
+
+      renderAdminTable();
+    }
+
+    function normalizeStr(str) {
+      return (str || '')
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s]/gi, ' ')
+        .trim();
+    }
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('adminTableBody');
+      if (!tbody) return;
+
+      const qRaw = (document.getElementById('adminSearchInput')?.value || '').trim();
+      const qNorm = normalizeStr(qRaw);
+      const tokens = qNorm.split(/\s+/).filter(Boolean);
+      const cat = document.getElementById('adminCatFilter')?.value || 'todos';
+
+      const all = Object.entries(productsData);
+
+      const filtered = all.filter(([id, p]) => {
+        const matchesCat = (cat === 'todos' || p.category === cat);
+        if (!matchesCat) return false;
+
+        if (tokens.length > 0) {
+          const specsText = (p.specs || []).map(s => `${s.label} ${s.val}`).join(' ');
+          const hay = normalizeStr(`${p.title || ''} ${p.model || ''} ${p.badge || ''} ${p.desc || ''} ${p.category || ''} ${specsText}`);
+          return tokens.every(tok => hay.includes(tok));
+        }
+        return true;
+      });
+
+      document.getElementById('tableFilterCount').textContent = `Mostrando ${filtered.length} de ${all.length} productos`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-5 text-secondary">
+              <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+              No se encontraron productos que coincidan con el filtro actual.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(([id, prod]) => {
+        const catInfo = CATEGORIES_CONFIG[prod.category] || { label: prod.category, icon: 'bi-tag', color: '#8b2cf5' };
+        html += `
+          <tr class="border-bottom border-light border-opacity-10">
+            <td class="ps-4">
+              <div class="rounded-3 overflow-hidden shadow-sm" style="width: 48px; height: 48px; background: #000; border: 1px solid rgba(255,255,255,0.12);">
+                <img src="${prod.img || './producto.png'}" alt="${prod.title}" class="w-100 h-100 object-fit-cover">
+              </div>
+            </td>
+            <td>
+              <strong class="d-block text-white" style="font-size: 0.92rem;">${prod.title}</strong>
+              <span class="badge bg-secondary bg-opacity-25 text-info border border-info border-opacity-25" style="font-size: 0.7rem;">SKU: ${prod.model}</span>
+            </td>
+            <td>
+              <span class="cat-pill" style="background: rgba(139, 44, 245, 0.15); color: #c084fc; border: 1px solid rgba(139, 44, 245, 0.3);">
+                <i class="bi ${catInfo.icon}"></i> ${catInfo.label}
+              </span>
+            </td>
+            <td>
+              <span class="fw-bold text-white fs-6">${formatCOP(prod.price)}</span>
+              <small class="text-secondary d-block" style="font-size: 0.72rem;">Antes de IVA</small>
+            </td>
+            <td>
+              <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 small" style="font-size: 0.74rem;">
+                <i class="bi bi-check-circle me-1"></i>${prod.stock || 'Stock Disponible'}
+              </span>
+            </td>
+            <td>
+              <small class="text-secondary" style="font-size: 0.78rem;">${prod.warranty ? prod.warranty.slice(0, 32) + '...' : 'Garantía Oficial'}</small>
+            </td>
+            <td class="text-end pe-4">
+              <div class="d-inline-flex gap-1.5">
+                <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-2.5 py-1" onclick="openProductForm('${id}')" title="Editar Producto">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" onclick="deleteProduct('${id}')" title="Eliminar Producto">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    let productFormModalInstance = null;
+
+    function openProductForm(prodId) {
+      const formModalEl = document.getElementById('productFormModal');
+      if (!formModalEl) return;
+
+      const formTitle = document.getElementById('pFormTitle');
+      const fpId = document.getElementById('fpId');
+      const fpTitle = document.getElementById('fpTitle');
+      const fpModel = document.getElementById('fpModel');
+      const fpCategory = document.getElementById('fpCategory');
+      const fpPrice = document.getElementById('fpPrice');
+      const fpBadge = document.getElementById('fpBadge');
+      const fpStock = document.getElementById('fpStock');
+      const fpImg = document.getElementById('fpImg');
+      const fpWarranty = document.getElementById('fpWarranty');
+      const fpDesc = document.getElementById('fpDesc');
+      const fpSpec1 = document.getElementById('fpSpec1');
+      const fpSpec2 = document.getElementById('fpSpec2');
+      const fpSpec3 = document.getElementById('fpSpec3');
+      const fpSpec4 = document.getElementById('fpSpec4');
+
+      if (prodId && productsData[prodId]) {
+        const p = productsData[prodId];
+        formTitle.textContent = 'Editar Producto: ' + p.model;
+        fpId.value = prodId;
+        fpTitle.value = p.title || '';
+        fpModel.value = p.model || '';
+        fpCategory.value = p.category || 'cctv';
+        fpPrice.value = p.price || 0;
+        fpBadge.value = p.badge || '';
+        fpStock.value = p.stock || 'Stock Disponible';
+        fpImg.value = p.img || './producto.png';
+        fpWarranty.value = p.warranty || '';
+        fpDesc.value = p.desc || '';
+
+        const specs = p.specs || [];
+        fpSpec1.value = specs[0] ? `${specs[0].label}: ${specs[0].val}` : '';
+        fpSpec2.value = specs[1] ? `${specs[1].label}: ${specs[1].val}` : '';
+        fpSpec3.value = specs[2] ? `${specs[2].label}: ${specs[2].val}` : '';
+        fpSpec4.value = specs[3] ? `${specs[3].label}: ${specs[3].val}` : '';
+      } else {
+        formTitle.textContent = 'Añadir Nuevo Producto al Catálogo';
+        fpId.value = '';
+        document.getElementById('productEditForm').reset();
+        fpImg.value = './producto.png';
+        fpStock.value = 'Stock Disponible';
+        fpCategory.value = 'cctv';
+        fpWarranty.value = '1 a 3 Años de Garantía Oficial';
+      }
+
+      if (!productFormModalInstance) {
+        productFormModalInstance = new bootstrap.Modal(formModalEl);
+      }
+      productFormModalInstance.show();
+    }
+
+    function saveProductForm(e) {
+      e.preventDefault();
+      const fpId = document.getElementById('fpId').value.trim();
+      const title = document.getElementById('fpTitle').value.trim();
+      const model = document.getElementById('fpModel').value.trim();
+      const category = document.getElementById('fpCategory').value;
+      const price = parseInt(document.getElementById('fpPrice').value, 10) || 0;
+      const badge = document.getElementById('fpBadge').value.trim() || (CATEGORIES_CONFIG[category]?.label || 'Tecnomax');
+      const stock = document.getElementById('fpStock').value;
+      const img = document.getElementById('fpImg').value.trim() || './producto.png';
+      const warranty = document.getElementById('fpWarranty').value.trim() || 'Garantía Oficial Tecnomax';
+      const desc = document.getElementById('fpDesc').value.trim();
+
+      const rawSpecs = [
+        document.getElementById('fpSpec1').value.trim(),
+        document.getElementById('fpSpec2').value.trim(),
+        document.getElementById('fpSpec3').value.trim(),
+        document.getElementById('fpSpec4').value.trim()
+      ].filter(Boolean);
+
+      const specs = rawSpecs.map((s, idx) => {
+        const parts = s.split(':');
+        if (parts.length > 1) {
+          return { label: parts[0].trim(), val: parts.slice(1).join(':').trim(), icon: 'bi-check-circle' };
+        }
+        return { label: 'Característica ' + (idx + 1), val: s, icon: 'bi-check-circle' };
+      });
+
+      if (specs.length === 0) {
+        specs.push({ label: 'Tecnología', val: 'Grado Profesional B2B', icon: 'bi-cpu' });
+        specs.push({ label: 'Garantía', val: warranty, icon: 'bi-shield-check' });
+      }
+
+      const prodId = fpId || ('prod-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5));
+
+      productsData[prodId] = {
+        id: prodId,
+        category: category,
+        badge: badge,
+        badgeColor: 'rgba(139, 44, 245, 0.25)',
+        badgeTextColor: '#c084fc',
+        model: model,
+        title: title,
+        price: price,
+        priceStr: formatCOP(price),
+        img: img,
+        desc: desc,
+        specs: specs,
+        warranty: warranty,
+        stock: stock,
+        waText: `${title} (REF: ${model})`
+      };
+
+      saveProductsCatalog();
+      renderAdminDashboard();
+
+      if (productFormModalInstance) {
+        productFormModalInstance.hide();
+      }
+
+      alert(`¡Producto "${title}" guardado y sincronizado exitosamente! Ya está visible en tienda.html.`);
+    }
+
+    function deleteProduct(prodId) {
+      if (!productsData[prodId]) return;
+      const p = productsData[prodId];
+      const confirmDelete = confirm(`¿Estás seguro de eliminar el producto "${p.title}" (REF: ${p.model}) del catálogo mayorista?`);
+      if (!confirmDelete) return;
+
+      delete productsData[prodId];
+      saveProductsCatalog();
+      renderAdminDashboard();
+    }
+
+    function resetDefaultCatalog() {
+      const confirmReset = confirm('¿Deseas restablecer el catálogo de fábrica con los 18 productos oficiales de las 9 categorías? Se restaurarán los valores predeterminados.');
+      if (!confirmReset) return;
+
+      productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+      saveProductsCatalog();
+      renderAdminDashboard();
+      alert('¡Catálogo restablecido exitosamente a los valores oficiales de fábrica!');
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProductsCatalog();
+      checkAuth();
+      if (sessionStorage.getItem('tecnomax_admin_auth') === 'true') {
+        renderAdminDashboard();
+      }
+    });
+  </script>
+</body>
+</html>
